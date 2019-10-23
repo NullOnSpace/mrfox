@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+  Blogs
+{% endblock %}
+
+{% block main %}
+  <h1>Blogs</h1>
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'blog:post_create' %}">Create Blog</a>
+  {% endif %}
+  {% for post in posts %}
+    <h2>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </h2>
+    {% if user == post.author %}
+    <a href="{% url 'blog:post_edit' post.pk %}">Edit <span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
+    {% endif %}
+    <p class="date">
+      Published {{ post.publish }} by {{ post.author }}
+    </p>
+    {{ post.body|truncatechars:140|linebreaks }}
+  {% endfor %}
+  {% if is_paginated %}
+    {% include "pagination.html" with page=page_obj %}
+  {% endif %}
+{% endblock %}

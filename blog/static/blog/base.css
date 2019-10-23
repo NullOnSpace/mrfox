@@ -1,0 +1,21 @@
+#content {
+  width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+#main {
+  width: 760px;
+  position: absolute;
+  left: 0;
+  border: 1px gray solid;
+  padding: 10px;
+}
+
+#sidebar {
+  width: 220px;
+  position: absolute;
+  left: 780px;
+  border: 1px gray solid;
+  padding: 10px;
+}
