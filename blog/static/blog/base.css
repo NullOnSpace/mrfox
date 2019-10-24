@@ -2,13 +2,14 @@
   width: 1000px;
   margin: 0 auto;
   position: relative;
+  min-height: 800px;
 }
 
 #main {
   width: 760px;
   position: absolute;
   left: 0;
-  border: 1px gray solid;
+  border: 1px solid #e5e5e5;
   padding: 10px;
 }
 
@@ -16,6 +17,40 @@
   width: 220px;
   position: absolute;
   left: 780px;
-  border: 1px gray solid;
+  border: 1px solid #e5e5e5;
   padding: 10px;
+}
+
+#footer {
+  width: 920px;
+  position: relative;
+  padding: 30px 0;
+  border-top: 1px solid #e5e5e5;
+  margin: 70px auto 0;
+  color: #777;
+  overflow: hidden;
+  text-align: left;
+}
+
+#footer .powered-by, #footer .about, #footer .info {
+  width: 280px;
+  border-right: 1px solid #e5e5e5;
+  margin: 0 10px;
+  display: inline-block;
+  vertical-align: text-top;
+}
+
+#footer ul {
+  list-style: none;
+}
+
+/* for post body textarea */
+textarea#id_body {
+  resize: none;
+  width: 100%;
+  height: 760px;
+}
+
+input#id_title {
+  width: 100%;
 }

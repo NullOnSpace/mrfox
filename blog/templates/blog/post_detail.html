@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block main %}
-  <h2>
+  <h3>
     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-  </h2>
+  </h3>
   {% if user == post.author %}
   <a href="{% url 'blog:post_edit' post.pk %}">Edit <span class="glyphicon glyphicon-pencil"></span></a>
   <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
