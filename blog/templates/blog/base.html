@@ -72,20 +72,21 @@
       </div><!-- /.container-fluid -->
     </nav>
   </div>
-  <div id="content">
+  {% spaceless %}
+  <div id="content" class="clearfix">
     {% block content %}
-      <div id="main">
+      <div id="main" class="fl">
         {% block main %}
         {% endblock %}
       </div>
-      <div id="sidebar">
+      <div id="sidebar" class="fl">
         {% block sidebar %}
           {% if user.is_authenticated %}
             <h3>My Posts</h3>
             <ul>
             {% my_posts user as iposts %}
             {% for post in iposts %}
-              <li><a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:10 }}</a></li>
+              <li><a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:30 }}</a></li>
             {% empty %}
               <li><a href="{% url 'blog:post_create' %}">create first one</a>.</li>
             {% endfor %}
@@ -95,7 +96,7 @@
           <h3>Latest Posts</h3>
           <ul>
             {% for post in nposts %}
-              <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+              <li><a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:30 }}</a></li>
             {% empty %}
               <li>No Posts</li>
             {% endfor %}
@@ -104,6 +105,7 @@
       </div>
     {% endblock %}
   </div>
+  {% endspaceless %}
   <div id="footer">
     <div class="powered-by">
       <h4>Powered by</h4>
