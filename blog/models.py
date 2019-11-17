@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 
+from taggit.managers import TaggableManager
+
 
 # Create your models here.
 class Post(models.Model):
@@ -18,6 +20,7 @@ class Post(models.Model):
                               default='draft')
     title = models.CharField(max_length=250)
     body = models.TextField()
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('-publish',)

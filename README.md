@@ -2,7 +2,7 @@
 
 ## TODO
 ### features
-- [ ] tagging
+- [ ] **ft001** tagging
 - [ ] show preview of md while editing
 
 ### bugs

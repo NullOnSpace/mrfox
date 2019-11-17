@@ -1,5 +1,6 @@
 {% extends "blog/base.html" %}
 {% load blog_tags %}
+{% load static %}
 
 {% block title %}
   {{ post.title }}
@@ -10,11 +11,74 @@
     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
   </h3>
   {% if user == post.author %}
-  <a href="{% url 'blog:post_edit' post.pk %}">Edit <span class="glyphicon glyphicon-pencil"></span></a>
-  <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
+  <a href="{% url 'blog:post_edit' post.pk %}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+  <a href="{% url 'blog:post_del' post.pk %}"><span class="glyphicon glyphicon-trash"></span> Delete</a>
   {% endif %}
+  <p class="tags">
+    {% with all_tags=post.tags.all %}
+    <span class="tags">
+      {% spaceless %}
+      {% for tag in all_tags %}
+      <span class="tag">
+        <a href="{% url 'blog:post_tag_list' tag.slug %}"><span class="glyphicon glyphicon-tag"></span>{{ tag.name }}</a>
+      </span>
+      {% endfor %}
+      {% endspaceless %}
+    </span>
+    {% if request.user == post.author %}
+      <a href="javascript:void(0);" id='set-tag'>
+        Edit Tag
+      </a>
+      <div class="modal">
+        <div class="tag-edit">
+          <div class="modal-title">
+            Edit Tag
+            <span class='close'>x</span>
+          </div>
+          <div class="new-tag">
+            <div>Tags split by space.</div>
+            <input type="text" name='new-tag' class="tags">
+            <input type="submit" value="Add Tag">
+            <span class="hint"></span>
+          </div>
+          <div class="current-tags">
+            Current Tags:
+            {% for tag in all_tags %}
+              <span class="tag">
+                {{ tag.name }}
+                <span class="close del"></span>
+              </span>
+            {% empty %}
+              <i>No tag so far.</i>
+            {% endfor %}
+          </div>
+          <div class="canditate-tags">
+            Common Tags:
+          </div>
+          <form action="{% url 'blog:post_tag_set' %}" method="POST" id="tag" class="hide">
+            {% csrf_token %}
+            <select name="tags" multiple></select>
+            <input type="text" name='post_id' value="{{ post.pk }}">
+          </form>
+          <div class="clearfix">
+            <button class="pull-right">Cancel</button>
+            <input id="tag-submit" class="pull-right" type="submit" value="Save Tags">
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% endwith %}
+  </p>
   <p class="date">
     Published {{ post.publish }} by {{ post.author }}
   </p>
   {{ post.body|markdown }}
+{% endblock %}
+
+{% block js %}
+<script src='{% static "blog/js/tag.js" %}'></script>
+{% endblock %}
+
+{% block domready %}
+window.postTagListURL = "{% url 'blog:post_tag_list' 'tobereplaced' %}";
 {% endblock %}

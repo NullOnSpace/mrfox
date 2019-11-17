@@ -54,3 +54,54 @@ textarea#id_body {
 input#id_title {
   width: 100%;
 }
+
+/*  */
+span.tag {
+  display: inline-block;
+  line-height: 1.33;
+  font-size: 12px;
+  border: 1px solid blue;
+  border-radius: 8px;
+  padding: 0 10px;
+  margin: 2px 5px;
+}
+
+/* modal */
+.modal {
+  background-color: RGBA(30, 30, 30, 0.7);
+}
+
+.modal > div {
+  margin: 0 auto;
+  border: 1px solid gray;
+}
+
+.modal div.tag-edit {
+  margin-top: 180px;
+  width: 600px;
+  min-height: 300px;
+  background-color: white;
+}
+
+.modal .modal-title {
+  padding: 8px;
+  border-bottom: 1px solid gray;
+  background-color: #EEE;
+}
+
+.modal .tag-edit > div {
+  padding: 8px 10px;
+}
+
+.tag span {
+  font-size: 12px;
+  line-height: 1.33;
+}
+
+.tag .del:after {
+  content: "x";
+}
+
+.tag .add:after {
+  content: "+";
+}
