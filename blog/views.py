@@ -96,12 +96,11 @@ def post_tag_list(request, tag_slug):
         'posts': posts, 'is_paginated': True, 'page_obj': page_obj,
     })
 
+
 def post_tag_set(request):
     if request.method == 'POST':
         tags = request.POST.getlist('tags')
-        print('tags:', tags)
         pk = request.POST.get('post_id')
-        print('post_id:', pk)
         post = get_object_or_404(Post, pk=pk)
         if post.author != request.user:
             return HttpResponseNotAllowed('users not post author')

@@ -27,7 +27,7 @@
       {% endif %}
     </p>
     {{ post.body|truncatechars:140|linebreaks }}
-    {% if post != forloop.last %}
+    {% if not forloop.last %}
     <hr>
     {% endif %}
   {% endfor %}
