@@ -18,7 +18,11 @@
     <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
     {% endif %}
     <p class="date">
+      {% if post.status == "published" %}
       Published {{ post.publish }} by {{ post.author }}
+      {% else %}
+      Draft created in {{ post.created }} by {{ post.author }}
+      {% endif %}
     </p>
     {{ post.body|truncatechars:140|linebreaks }}
   {% endfor %}

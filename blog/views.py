@@ -66,7 +66,13 @@ class PostCreate(PostEditMixin, CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class PostUpdate(AuthorRequiredMixin, PostEditMixin, UpdateView):
-    pass
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        if not post.publish and post.status == 'published':
+            post.publish = timezone.now()
+        post.save()
+        self.object = post
+        return HttpResponseRedirect(self.get_success_url())
 
 
 @method_decorator(login_required, name='dispatch')
