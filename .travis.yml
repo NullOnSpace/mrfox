@@ -27,8 +27,6 @@ install:
   - pip install -r requirements.txt
   - pip install python-coveralls
   - pip install coverage codecov
-before_script:
-  - python manage.py migrate --settings=mysite.settings.pro
 # command to run tests
 script:
     - coverage run --source="." manage.py test
