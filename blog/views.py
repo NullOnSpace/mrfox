@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -18,6 +18,14 @@ from taggit.models import Tag
 
 
 # Create your views here.
+def author_required(fn):
+    def _wrapper(request, *args, **kwargs):
+        if request.user == self.object.author:
+            return fn(request, *args, **kwargs)
+        else:
+            return reverse("blog:post_detail", kwargs={"pk": self.object.pk})
+
+
 class PostDetail(DetailView):
     model = Post
     context_object_name = 'post'

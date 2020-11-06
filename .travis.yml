@@ -1,0 +1,35 @@
+dist: bionic
+language: python
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+services:
+  - mysql
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE="mysite.settings.pro"
+branches:
+    only:
+        - master
+# command to install dependencies
+before_install:
+  - sudo apt-get update
+addons:
+  apt:
+    packages:
+    - python-dev
+    - python3-dev
+    - libmysqlclient-dev
+install:
+  - pip install -r requirements.txt
+  - pip install python-coveralls
+  - pip install coverage codecov
+before_script:
+  - python manage.py migrate
+# command to run tests
+script:
+    - coverage run --source="." manage.py test
+after_success:
+    - coverage report

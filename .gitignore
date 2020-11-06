@@ -16,3 +16,5 @@ tests/report/
 celerybeat-schedule.*
 mysql.cnf
 config/
+
+.coverage
