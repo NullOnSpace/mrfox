@@ -11,6 +11,7 @@ from django import forms
 from django.http import (HttpResponseRedirect, HttpResponseForbidden,
     HttpResponseNotAllowed, JsonResponse)
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import PermissionDenied
 
 from .models import Post
 
@@ -18,13 +19,6 @@ from taggit.models import Tag
 
 
 # Create your views here.
-def author_required(fn):
-    def _wrapper(request, *args, **kwargs):
-        if request.user == self.object.author:
-            return fn(request, *args, **kwargs)
-        else:
-            return reverse("blog:post_detail", kwargs={"pk": self.object.pk})
-
 
 class PostDetail(DetailView):
     model = Post
@@ -50,9 +44,16 @@ class PostEditMixin:
         return modelform_factory(model, fields=self.fields, widgets=widgets)
 
 
+class AuthorRequiredMixin:
+    def get_object(self, query_set=None):
+        object = super().get_object(query_set)
+        if self.request.user == object.author:
+            return object
+        raise PermissionDenied("You are not allowed to do this!")
+
+
 @method_decorator(login_required, name='dispatch')
 class PostCreate(PostEditMixin, CreateView):
-
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
@@ -64,12 +65,12 @@ class PostCreate(PostEditMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PostUpdate(PostEditMixin, UpdateView):
+class PostUpdate(AuthorRequiredMixin, PostEditMixin, UpdateView):
     pass
 
 
 @method_decorator(login_required, name='dispatch')
-class PostDelete(DeleteView):
+class PostDelete(AuthorRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('blog:post_list')
 

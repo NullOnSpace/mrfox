@@ -6,4 +6,4 @@
 - [ ] show preview of md while editing
 
 ### bugs
-- [ ] users can edit other users' blog through corresponding url
+- [x] users can edit other users' blog through corresponding url
