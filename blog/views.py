@@ -111,4 +111,4 @@ def post_tag_set(request):
         res = {'code': 'success', 'tags': tag_dict}
         return JsonResponse(res)
     else:
-        return HttpResponseNotAllowed('only post allowed')
+        return HttpResponseNotAllowed('only post method allowed')

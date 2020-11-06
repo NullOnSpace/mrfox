@@ -13,10 +13,12 @@
     <h3>
       <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
     </h3>
-    {% if user == post.author %}
-    <a href="{% url 'blog:post_edit' post.pk %}">Edit <span class="glyphicon glyphicon-pencil"></span></a>
-    <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
-    {% endif %}
+    <div class="edit-tool">
+      {% if user == post.author %}
+      <a href="{% url 'blog:post_edit' post.pk %}">Edit <span class="glyphicon glyphicon-pencil"></span></a>
+      <a href="{% url 'blog:post_del' post.pk %}">Delete <span class="glyphicon glyphicon-trash"></span></a>
+      {% endif %}
+    </div>
     <p class="date">
       {% if post.status == "published" %}
       Published {{ post.publish }} by {{ post.author }}
@@ -25,6 +27,9 @@
       {% endif %}
     </p>
     {{ post.body|truncatechars:140|linebreaks }}
+    {% if post != forloop.last %}
+    <hr>
+    {% endif %}
   {% endfor %}
   {% if is_paginated %}
     {% include "pagination.html" with page=page_obj %}

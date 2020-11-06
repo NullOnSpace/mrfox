@@ -105,3 +105,9 @@ span.tag {
 .tag .add:after {
   content: "+";
 }
+
+.edit-tool a {
+  display: inline-block;
+  margin-right: 10px;
+  line-height: 1.33;
+}
