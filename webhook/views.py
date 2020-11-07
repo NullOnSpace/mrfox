@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import base64
 import json
 import logging
+import subprocess
 
 from urllib.parse import parse_qs
 
@@ -46,7 +47,20 @@ class Travis(View):
             # Log the failure somewhere
             return HttpResponseBadRequest({'status': 'unauthorized'})
         json_data = json.loads(json_payload)
-        logger.info(f"webhook json data: {json_data}")
+        # Custom actions
+        branch = json_data["branch"]
+        error = json_data['status']  # 0 means pass, 1 means fail
+        commit = json_data['commit']
+        repository_id = json_data['repository']['id']
+        if not error:
+            if repository_id == 16709902:
+                logger.info(
+                    f"Auto update to new commit {commit} on branch {branch}")
+                subprocess.Popen("bash ~/deploy.sh", shell=True)
+            else:
+                logger.info(f"Suspicious webhook: {json_data}")
+        else:
+            logger.info(f"Failed commit {commit} on branch {branch}")
         return JsonResponse({'status': 'received'})
 
     def check_authorized(self, signature, public_key, payload):

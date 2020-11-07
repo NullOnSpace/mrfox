@@ -16,5 +16,6 @@ tests/report/
 celerybeat-schedule.*
 mysql.cnf
 config/
+materials/
 
 .coverage
