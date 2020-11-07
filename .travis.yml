@@ -17,6 +17,7 @@ branches:
 # command to install dependencies
 before_install:
   - sudo apt-get update
+  - sudo mkdir /var/log/django
 addons:
   apt:
     packages:
