@@ -22,11 +22,17 @@ DATABASES = {
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'custom': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s'
+        },
+    },
     'handlers': {
         'file': {
             'level': "INFO",
             'class': 'logging.FileHandler',
             'filename': '/var/log/django/mrfox.log',
+            'formatter': 'custom',
         },
     },
     'loggers': {
