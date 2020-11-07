@@ -18,6 +18,7 @@ branches:
 before_install:
   - sudo apt-get update
   - sudo mkdir /var/log/django
+  - sudo chown `whoami`:`whoami` /var/log/django
 addons:
   apt:
     packages:
