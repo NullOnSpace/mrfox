@@ -146,3 +146,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = reverse_lazy('blog:post_list')
 LOGOUT_REDIRECT_URL = reverse_lazy('blog:post_list')
 LOGIN_URL = reverse_lazy('account:login')
+
+# travis
+
+TRAVIS_CONFIG_URL = "https://api.travis-ci.com/config"

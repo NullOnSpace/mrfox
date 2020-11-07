@@ -32,3 +32,6 @@ script:
     - coverage run --source="." manage.py test
 after_success:
     - coverage report
+notifications:
+  webhooks:
+    - http://www.yforward.top/hook/
