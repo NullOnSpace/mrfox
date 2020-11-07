@@ -5,4 +5,4 @@ mysqlclient==1.4.4
 pytz==2019.3
 sqlparse==0.3.0
 pyOpenSSL==19.1.0
-requests==2.19.1
+requests==2.20.0
