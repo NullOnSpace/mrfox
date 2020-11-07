@@ -2,7 +2,8 @@ os: linux
 dist: bionic
 language: python
 python:
-  - "3.5"
+  # - "3.5"
+  # 3.5 doesn't support f format string
   - "3.6"
   - "3.7"
 
