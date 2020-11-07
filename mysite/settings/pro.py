@@ -42,4 +42,8 @@ LOGGING = {
             'propagate': True,
         },
     },
+    'root': {
+        'handlers': ['file'],
+        'level': "INFO",
+    },
 }
