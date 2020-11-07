@@ -72,7 +72,7 @@
   <p class="date">
     Published {{ post.publish }} by {{ post.author }}
   </p>
-  {{ post.body|markdown }}
+  {{ post.normalized_body|markdown }}
 {% endblock %}
 
 {% block js %}

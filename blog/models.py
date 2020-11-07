@@ -4,6 +4,10 @@ from django.urls import reverse
 
 from taggit.managers import TaggableManager
 
+from .utils.md_normalize import normalize
+
+from io import StringIO
+
 
 # Create your models here.
 class Post(models.Model):
@@ -30,3 +34,7 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.pk])
+
+    @property
+    def normalized_body(self):
+        return normalize(StringIO(self.body))
