@@ -28,8 +28,8 @@ class Travis(View):
 
     def post(self, request, *args, **kwargs):
         signature = self._get_signature(request)
-        logger.info(str(request.body))
-        json_payload = parse_qs(request.body)['payload'][0]
+        # request body are bytes, need decode
+        json_payload = parse_qs(request.body.decode('utf-8'))['payload'][0]
         try:
             public_key = self._get_travis_public_key()
         except requests.Timeout:
