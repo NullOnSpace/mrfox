@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.shortcuts import reverse
+from django.conf import settings
 
 from .models import Post
 from account.models import Author
@@ -61,6 +62,26 @@ class AnonymousTest(TestCase):
         access_url = reverse('blog:post_detail', kwargs={"pk": self.post.pk})
         res = self.client.get(access_url)
         self.assertIn(b'post by test1', res.content)
+
+    def test_anonymous_user_can_login(self):
+        login_url = reverse('account:login')
+        res = self.client.get(login_url)
+        self.assertEqual(200, res.status_code)
+        # right credentials can login
+        credentials = {
+            'username': 'test',
+            'password': 'test123456'
+        }
+        res = self.client.post(login_url, credentials)
+        login_redirect = settings.LOGIN_REDIRECT_URL
+        self.assertEqual(res.url, login_redirect)
+        # wrong credentials cant login
+        wrong_credentials = {
+            'username': 'test',
+            'password': 'test123456ddd'
+        }
+        res = self.client.post(login_url, wrong_credentials)
+        self.assertFalse(res.context_data['form'].is_valid())
 
 
 class SingleUserTest(TestCase):
