@@ -37,4 +37,4 @@ after_success:
     - coverage report
 notifications:
   webhooks:
-    - http://www.yforward.top/hook/
+    - https://www.yforward.top/hook/
