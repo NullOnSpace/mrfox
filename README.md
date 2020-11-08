@@ -1,4 +1,4 @@
-[https://travis-ci.com/NullOnSpace/mrfox.svg?branch=master]
+[![Build Status](https://travis-ci.com/NullOnSpace/mrfox.svg?branch=master)](https://travis-ci.com/NullOnSpace/mrfox)
 # mrfox is a blog website proj
 
 ## TODO
