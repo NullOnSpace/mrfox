@@ -1,3 +1,4 @@
+[https://travis-ci.com/NullOnSpace/mrfox.svg?branch=master]
 # mrfox is a blog website proj
 
 ## TODO
