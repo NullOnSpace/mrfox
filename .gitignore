@@ -17,5 +17,6 @@ celerybeat-schedule.*
 mysql.cnf
 config/
 materials/
+media/
 
 .coverage

@@ -22,4 +22,5 @@ urlpatterns = [
     path('blog/', include('blog.urls', namespace='blog')),
     path('account/', include('account.urls', namespace='account')),
     path('hook/', include('webhook.urls', namespace='webhook')),
+    path('upload/', include('upload.urls', namespace='upload')),
 ]
