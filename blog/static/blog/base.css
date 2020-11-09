@@ -47,12 +47,15 @@
 /* for post body textarea */
 textarea#id_body {
   resize: none;
-  width: 100%;
+  display: block;
+  width: 800px;
   height: 760px;
+  font-family: monospace;
 }
 
 input#id_title {
-  width: 100%;
+  display: block;
+  width: 800px;
 }
 
 /*  */
