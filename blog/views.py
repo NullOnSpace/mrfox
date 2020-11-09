@@ -12,6 +12,7 @@ from django.http import (HttpResponseRedirect, HttpResponseForbidden,
     HttpResponseNotAllowed, JsonResponse)
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 
 from .models import Post
 
@@ -35,6 +36,14 @@ class PostList(BlogAppMixin, ListView):
     model = Post
     paginate_by = 10
     context_object_name = 'posts'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            q = Q(status="published") | Q(author=self.request.user)
+        else:
+            q = Q(status="published")
+        qs = super().get_queryset().filter(q).order_by('-created')
+        return qs
 
 
 class PostEditMixin:

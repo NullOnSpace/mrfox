@@ -6,6 +6,7 @@ python:
   # 3.5 doesn't support f format string
   - "3.6"
   - "3.7"
+  - "3.8"
 
 services:
   - mysql
@@ -32,7 +33,7 @@ install:
   - pip install coverage codecov
 # command to run tests
 script:
-    - coverage run --source="." manage.py test
+    - coverage run --source="." manage.py test --parallel
 after_success:
     - coverage report
 notifications:
