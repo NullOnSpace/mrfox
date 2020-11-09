@@ -19,4 +19,7 @@ config/
 materials/
 media/
 
+# test generated file
+blog/utils/test.md
+
 .coverage
