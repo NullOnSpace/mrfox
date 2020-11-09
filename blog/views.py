@@ -19,13 +19,19 @@ from taggit.models import Tag
 
 
 # Create your views here.
+class BlogAppMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section'] = 'blog'
+        return context
 
-class PostDetail(DetailView):
+
+class PostDetail(BlogAppMixin, DetailView):
     model = Post
     context_object_name = 'post'
 
 
-class PostList(ListView):
+class PostList(BlogAppMixin, ListView):
     model = Post
     paginate_by = 10
     context_object_name = 'posts'
@@ -53,7 +59,7 @@ class AuthorRequiredMixin:
 
 
 @method_decorator(login_required, name='dispatch')
-class PostCreate(PostEditMixin, CreateView):
+class PostCreate(BlogAppMixin, PostEditMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
@@ -65,7 +71,7 @@ class PostCreate(PostEditMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PostUpdate(AuthorRequiredMixin, PostEditMixin, UpdateView):
+class PostUpdate(BlogAppMixin, AuthorRequiredMixin, PostEditMixin, UpdateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         if not post.publish and post.status == 'published':
@@ -76,7 +82,7 @@ class PostUpdate(AuthorRequiredMixin, PostEditMixin, UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PostDelete(AuthorRequiredMixin, DeleteView):
+class PostDelete(BlogAppMixin, AuthorRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('blog:post_list')
 
