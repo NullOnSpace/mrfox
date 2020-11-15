@@ -5,7 +5,6 @@ import base64
 import json
 import logging
 import subprocess
-
 from urllib.parse import parse_qs
 
 import requests
