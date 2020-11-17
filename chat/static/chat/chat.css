@@ -3,14 +3,58 @@
   margin: 0 auto;
 }
 
+#chat {
+  width: 480px;
+  display: inline-block;
+  margin-left: 30px;
+}
+
+#contact-list {
+  display: inline-block;
+  width: 160px;
+  font-size: 24px;
+  vertical-align: top;
+}
+
+#dest {
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#contact-list .contact {
+  border: 1px solid #333;
+  width: 100%;
+  line-height: 40px;
+  background-color: blue;
+  padding: 0 5px;
+  color: white;
+}
+#contact-list .contact.active {
+  background-color: red;
+  box-shadow: 1px 1px 3px black inset;
+}
+
+
 #dialog {
   height: 600px;
   border: 1px solid #3A3226;
   font-size: 14px;
   font-weight: 400;
   font-family: monospace, "Microsoft Yahei";
+  position: relative;
   overflow-y: scroll;
   padding-right: 6px;
+}
+
+.dialog {
+  position: absolute;
+  left: -2000px;
+}
+.dialog.active {
+  position: static;
 }
 
 #dialog::-webkit-scrollbar {

@@ -14,8 +14,12 @@ def room(request, room_id):
 
 @login_required
 def contact(request):
-    contacts = [{'dest': f"user_{a.id}"} 
-        for a in Author.objects.all()]
+    u = request.user
+    contacts = [{
+        'dest': f"user_{a.id}_{u.id}" if a.id<u.id else f"user_{u.id}_{a.id}",
+        "name": a.username
+        }
+        for a in Author.objects.all() if a != u]
     return render(request, 'chat/contact.html', {
         'contacts': contacts,
     })

@@ -8,10 +8,16 @@
 {% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<div id="chatroom" data-rid="{{ room.id }}">
+<div id="contact-list">
+  {% for contact in contacts %}
+  <div class="contact" data-dest="{{ contact.dest }}">{{ contact.name }}</div>
+  {% empty %}
+  No friend :(
+  {% endfor %}
+</div>
+<div id="chat">
+  <div id="dest"></div>
   <div id="dialog">
-    <div class="dialog active"></div>
   </div>
   <div id="chat-input">
     <textarea name="chat" id="chat-message-input" cols="50" rows="5"
@@ -21,24 +27,55 @@
   </div>
 </div>
 {{ user.id|json_script:"user-id" }}
-{% else %}
-<div class="no-login">
-  You need  <a href="{% url "account:login" %}">login</a> to join the room.
-</div>
-{% endif %}
 {% endblock %}
 
 {% block domready %}
   const userId = document.getElementById('user-id').textContent;
-  const roomId = document.getElementById('chatroom').dataset.rid;
 
-  const chatSocket = new WebSocket(
+  window.chatSocket = new WebSocket(
      'ws://'
      + window.location.host
      + '/ws/chat/'
-     + roomId
-     + '/'
   );
+  window.activeContact = null;
+  const domContacts = document.querySelectorAll(".contact");
+  domContacts.forEach(function(target, idx, nodeList){
+    target.addEventListener("click", function(e){
+      window.activeContact = e.target;
+      document.querySelectorAll(".contact").forEach(function(t){
+        t.classList.remove("active");
+      });
+      e.target.classList.add("active");
+      const dialogId = e.target.dataset.dest;
+      const domDialog = getDialog(dialogId);
+      document.querySelectorAll(".dialog").forEach(function(t){
+        t.classList.remove("active");
+      });
+      domDialog.classList.add("active");
+      const domDest = document.getElementById("dest");
+      domDest.innerText = this.innerText;
+      if (window.chatSocket.readyState == 1){
+        const messageInputDom = document.querySelector('#chat-message-input');
+        messageInputDom.disabled = false;
+        messageInputDom.placeholder = "Enter your message";
+        messageInputDom.focus();
+      }
+    });}
+  );
+
+  function getDialog(dialogId){
+    var domDialog = document.getElementById(dialogId);
+    if (domDialog){
+      return domDialog;
+    }else {
+      domDialog = document.createElement("div");
+      domDialog.id = dialogId;
+      domDialog.classList.add("dialog");
+      const domDialogWrapper = document.getElementById("dialog");
+      domDialogWrapper.appendChild(domDialog);
+      return domDialog;
+    }
+  }
 
   chatSocket.onmessage = function(e) {
      const data = JSON.parse(e.data);
@@ -46,6 +83,7 @@
      const domUser = document.createElement("div");
      const domMsgContent = document.createElement("div");
      const domMsgContentWrapper = document.createElement("div");
+     const dest = data.dest;
      domUser.classList.add("user");
      domMessage.classList.add("msg-box");
      domMessage.classList.add("clearfix");
@@ -66,7 +104,8 @@
      domUser.dataset.uid = data.sender_id;
      domUser.innerText = data.sender_name;
      domMsgContent.innerText = data.message;
-     const domDialog = document.querySelector('#dialog .dialog');
+     const domDialogWrapper = document.querySelector('#dialog');
+     const domDialog = getDialog(dest);
      domDialog.appendChild(domMessage);
      domDialog.scrollTo(0, domDialog.scrollHeight);
   };
@@ -80,9 +119,13 @@
 
   chatSocket.onopen = function(e) {
     const messageInputDom = document.querySelector('#chat-message-input');
-    messageInputDom.disabled = false;
-    messageInputDom.placeholder = "Enter your message";
-    messageInputDom.focus();
+    if (window.activeContact){
+      messageInputDom.disabled = false;
+      messageInputDom.placeholder = "Enter your message";
+      messageInputDom.focus();
+    } else {
+      messageInputDom.placeholder = "Choose a Contact to send message";
+    }
   };
 
   document.querySelector('#chat-message-input').focus();
@@ -96,9 +139,10 @@
   document.querySelector('#chat-message-submit').onclick = function(e) {
      const messageInputDom = document.querySelector('#chat-message-input');
      const message = messageInputDom.value;
-     if (message.trim()){
+     if (message.trim() && window.activeContact){
        chatSocket.send(JSON.stringify({
-         'message': message
+         'message': message,
+         'dest': window.activeContact.dataset.dest,
        }));
      } else {
        console.log("Cant send empty");
