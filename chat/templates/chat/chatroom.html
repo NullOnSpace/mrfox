@@ -1,17 +1,34 @@
 {% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}Chatroom{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div id="chatroom" data-rid="{{ room.id }}">
   <div id="dialog">
   </div>
   <div id="chat-input">
-    <textarea name="chat" id="chat-message-input" cols="30" rows="10"></textarea>
-    <input type="submit" id="chat-message-submit">
+    <textarea name="chat" id="chat-message-input" cols="50" rows="5"
+      placeholder="wait for connection" disabled=true
+    ></textarea>
+    <input type="submit" id="chat-message-submit" value="SEND">
   </div>
 </div>
+{{ user.id|json_script:"user-id" }}
+{% else %}
+<div class="no-login">
+  You need  <a href="{% url "account:login" %}">login</a> to join the room.
+</div>
+{% endif %}
 {% endblock %}
 
 {% block domready %}
+  const userId = document.getElementById('user-id').textContent;
   const roomId = document.getElementById('chatroom').dataset.rid;
 
   const chatSocket = new WebSocket(
@@ -27,31 +44,64 @@
      const domMessage = document.createElement("div");
      const domUser = document.createElement("div");
      const domMsgContent = document.createElement("div");
+     const domMsgContentWrapper = document.createElement("div");
+     domUser.classList.add("user");
+     domMessage.classList.add("msg-box");
+     domMessage.classList.add("clearfix");
+     domMsgContentWrapper.classList.add("msg-wrapper");
+     if (data.sender_id == userId){
+       domMessage.classList.add("self");
+     }else if (data.sender_id != 0){
+       domMessage.classList.add("other");
+     }else if (data.sender_id == 0){
+       domMessage.classList.add("sys");
+     }else {
+       console.log("wrong user id", data.sender_id);
+     }
+     domMsgContent.classList.add("msg");
      domMessage.appendChild(domUser);
-     domMessage.appendChild(domMsgContent);
+     domMsgContentWrapper.appendChild(domMsgContent);
+     domMessage.appendChild(domMsgContentWrapper);
      domUser.dataset.uid = data.sender_id;
      domUser.innerText = data.sender_name;
      domMsgContent.innerText = data.message;
-     document.querySelector('#dialog').appendChild(domMessage);
+     const domDialog = document.querySelector('#dialog');
+     domDialog.appendChild(domMessage);
+     domDialog.scrollTo(0, domDialog.scrollHeight);
   };
 
   chatSocket.onclose = function(e) {
      console.error('Chat socket closed unexpectedly');
+     const messageInputDom = document.querySelector('#chat-message-input');
+     messageInputDom.disabled = true;
+     messageInputDom.placeholder = "Connection break,Press F5 to refresh";
+  };
+
+  chatSocket.onopen = function(e) {
+    const messageInputDom = document.querySelector('#chat-message-input');
+    messageInputDom.disabled = false;
+    messageInputDom.placeholder = "Enter your message";
+    messageInputDom.focus();
   };
 
   document.querySelector('#chat-message-input').focus();
   document.querySelector('#chat-message-input').onkeyup = function(e) {
      if (e.keyCode === 13) {  // enter, return
-         document.querySelector('#chat-message-submit').click();
+        e.preventDefault();
+        document.querySelector('#chat-message-submit').click();
      }
   };
 
   document.querySelector('#chat-message-submit').onclick = function(e) {
      const messageInputDom = document.querySelector('#chat-message-input');
      const message = messageInputDom.value;
-     chatSocket.send(JSON.stringify({
+     if (message.trim()){
+       chatSocket.send(JSON.stringify({
          'message': message
-     }));
+       }));
+     } else {
+       console.log("Cant send empty");
+     }
      messageInputDom.value = '';
   };
 {% endblock %}

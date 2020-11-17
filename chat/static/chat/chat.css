@@ -1,0 +1,134 @@
+#chatroom {
+  width: 480px;
+  margin: 0 auto;
+}
+
+#dialog {
+  height: 600px;
+  border: 1px solid #3A3226;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: monospace, "Microsoft Yahei";
+  overflow-y: scroll;
+  padding-right: 6px;
+}
+
+#dialog::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: #aaa;
+}
+
+#dialog::-webkit-scrollbar-thumb {
+    background: #333;
+}
+
+#dialog .msg-box {
+  padding: 5px 10px;
+}
+
+#dialog .msg-box.self {
+  margin-left: 60px;
+}
+#dialog .msg-box.other {
+  margin-right: 60px;
+}
+
+#dialog .user {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.msg-box.self .user {
+  text-align: right;
+}
+.msg-box.other .user {
+  text-align: left;
+}
+.msg-box.sys .user {
+  text-align: left;
+  color: red;
+}
+
+#dialog .msg-box.self .msg-wrapper {
+    text-align: right;
+}
+#dialog .msg-box.other .msg-wrapper {
+    text-align: left;
+}
+
+#dialog .msg {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 5px 5px;
+  line-height: 24px;;
+  word-break: break-word;
+  position: relative;
+}
+
+.msg-box.self .msg {
+  background-color: #A5DEE4;
+  border-left: 4px solid black;
+}
+.msg-box.other .msg {
+  background-color: #A8D8B9;
+  border-right: 4px solid black;
+}
+.msg-box.sys .msg {
+  background-color: #333;
+  border-right: 4px solid #333;
+  color: #FCFAF2;
+}
+
+
+#dialog .msg:after {
+	top: 12px; /* arrow position */
+	border: solid transparent;
+	content: "";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-width: 5px; /* arrow size */
+	margin-top: -5px; /* arrow size */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#dialog .msg-box.self .msg:after {
+  border-color: rgba(165, 222, 228, 0);
+  border-left-color: #A5DEE4;  /* left or right */
+  left: 100%; /* left or right */
+}
+#dialog .msg-box.other .msg:after {
+  border-color: rgba(168, 216, 185, 0);
+  border-right-color: #A8D8B9;  /* left or right */
+  right: 100%; /* left or right */
+}
+#dialog .msg-box.sys .msg:after {
+  border-color: rgba(51, 51, 51, 0);
+  border-right-color: #333;  /* left or right */
+  right: 100%; /* left or right */
+}
+
+#chat-input {
+  width: 100%;
+  position: relative;
+  margin-top: 10px;
+}
+
+textarea#chat-message-input {
+  resize: none;
+  vertical-align: middle;
+  display: inline-block;
+  height: 80px;
+}
+
+input#chat-message-submit {
+  position: absolute;
+  right: 5px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  vertical-align: middle;
+}
