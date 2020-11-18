@@ -5,3 +5,4 @@ When a ws close unexpectly, the `disconnect` method wont be called. Thus there w
 
 #### Solution
 In AppConfig.ready, remove all the "asgi:group:*" keys in redis backend.
+But in uwsgi, the harikiri will kill instance and restart it, the cleaning up will influence other instances.

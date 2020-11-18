@@ -56,7 +56,7 @@
 }
 
 #dialog {
-  height: 480px;
+  height: 420px;
   border: 1px solid #3A3226;
   font-size: 14px;
   font-weight: 400;
@@ -129,7 +129,7 @@
 #dialog .msg {
   display: inline-block;
   border-radius: 4px;
-  padding: 3px 5px;
+  padding: 3px 8px;
   line-height: 20px;;
   word-break: break-word;
   position: relative;
