@@ -36,7 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'channels',
-    'chat',
+    'chat.apps.ChatConfig',
     'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -162,6 +162,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
+            # When this changes, the redis config in ChatConfig also needs to.
             "hosts": [("127.0.0.1", 6379)],
         },
     },
