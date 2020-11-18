@@ -4,6 +4,8 @@
 }
 
 #chat {
+  position: relative;
+  left: 200px;
   width: 480px;
   display: inline-block;
   margin-left: 30px;
@@ -12,34 +14,49 @@
 #contact-list {
   display: inline-block;
   width: 160px;
-  font-size: 24px;
   vertical-align: top;
+  background-color: #42602D;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow-y: scroll;
 }
 
-#dest {
-  height: 20px;
-  line-height: 20px;
-  font-size: 14px;
+#contact-list::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: #aaa;
+}
+
+#contact-list::-webkit-scrollbar-thumb {
+    background: #333;
+}
+
+#contact-list .contact-title {
+  line-height: 64px;
   text-align: center;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 30px;
+  color: white;
+  border-bottom: 1px solid #333;
 }
 
 #contact-list .contact {
-  border: 1px solid #333;
+  border-bottom: 1px solid #333;
   width: 100%;
   line-height: 40px;
-  background-color: blue;
+  font-size: 16px;
+  background-color: #42602D;
   padding: 0 5px;
   color: white;
 }
 #contact-list .contact.active {
-  background-color: red;
+  background-color: #91B493;
   box-shadow: 1px 1px 3px black inset;
 }
 
-
 #dialog {
-  height: 600px;
+  height: 480px;
   border: 1px solid #3A3226;
   font-size: 14px;
   font-weight: 400;
@@ -47,6 +64,14 @@
   position: relative;
   overflow-y: scroll;
   padding-right: 6px;
+}
+
+#dest {
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .dialog {
@@ -104,8 +129,8 @@
 #dialog .msg {
   display: inline-block;
   border-radius: 4px;
-  padding: 5px 5px;
-  line-height: 24px;;
+  padding: 3px 5px;
+  line-height: 20px;;
   word-break: break-word;
   position: relative;
 }

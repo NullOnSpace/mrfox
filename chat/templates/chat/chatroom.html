@@ -66,9 +66,10 @@
      domUser.dataset.uid = data.sender_id;
      domUser.innerText = data.sender_name;
      domMsgContent.innerText = data.message;
+     const domDialogWrapper = document.querySelector('#dialog');
      const domDialog = document.querySelector('#dialog .dialog');
      domDialog.appendChild(domMessage);
-     domDialog.scrollTo(0, domDialog.scrollHeight);
+     domDialogWrapper.scrollTo(0, domDialogWrapper.scrollHeight);
   };
 
   chatSocket.onclose = function(e) {

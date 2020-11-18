@@ -9,6 +9,9 @@
 
 {% block content %}
 <div id="contact-list">
+  <div class="contact-title">
+    Contacts
+  </div>
   {% for contact in contacts %}
   <div class="contact" data-dest="{{ contact.dest }}">{{ contact.name }}</div>
   {% empty %}
@@ -107,7 +110,7 @@
      const domDialogWrapper = document.querySelector('#dialog');
      const domDialog = getDialog(dest);
      domDialog.appendChild(domMessage);
-     domDialog.scrollTo(0, domDialog.scrollHeight);
+     domDialogWrapper.scrollTo(0, domDialogWrapper.scrollHeight);
   };
 
   chatSocket.onclose = function(e) {

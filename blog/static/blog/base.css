@@ -1,7 +1,8 @@
 #content {
   width: 1000px;
   margin: 0 auto;
-  min-height: 800px;
+  min-height: 580px;
+  position: relative;
 }
 
 #main {

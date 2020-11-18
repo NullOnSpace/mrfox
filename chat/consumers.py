@@ -1,12 +1,13 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.auth import get_user
-
 import json
+import time
+
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 
 class ChatRoomConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user = await get_user(self.scope)
+        self.user = self.scope['user']
         if not user.is_authenticated:
             await self.close()
         else:
@@ -28,15 +29,13 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        user = await get_user(self.scope)
-        print(user)
         await self.channel_layer.group_send(
             self.group_name,
             {
                 'type': 'room_message',
                 'message': message,
-                'sender_id': user.id,
-                'sender_name': user.username,
+                'sender_id': self.user.id,
+                'sender_name': self.user.username,
             }
         )
 
@@ -53,12 +52,13 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 class ContactConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user = await get_user(self.scope)
+        self.user = self.scope['user']
+        self.pk = self.user.id
+        self.username = self.user.username
         if not self.user.is_authenticated:
             await self.close()
         else:
-            self.group_name = f'user_{self.user.id}'
-            print(self.group_name, self.channel_name)
+            self.group_name = f'user_{self.pk}'
             await self.channel_layer.group_add(
                 self.group_name,
                 self.channel_name
@@ -72,48 +72,56 @@ class ContactConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        print("recv from ws client", time.time())
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         dest = text_data_json['dest']
         type_, pks = dest.split("_", maxsplit=1)
         # send to selfs
+        print("sending to channel self...", time.time())
         await self.channel_layer.group_send(
             self.group_name,
             {
-                'type': 'chat_message',
+                'type': 'chat.message',
                 'message': message,
-                'sender_id': self.user.id,
-                'sender_name': self.user.username,
+                'sender_id': self.pk,
+                'sender_name': self.username,
                 'dest': dest,
                 # 'exclude': self.channel_name,
             }
         )
+        print("send to channel self ok", time.time())
         if type_ == "user":
             pk1, pk2 = pks.split("_")
             pk1, pk2 = int(pk1), int(pk2)
             dest_group_name = f"user_{pk2}" \
-                if pk1 == self.user.pk else f"user_{pk1}"
+                if pk1 == self.pk else f"user_{pk1}"
+            print("sending to channel dest...", time.time())
             await self.channel_layer.group_send(
                 dest_group_name,
                 {
                     'type': 'chat.message',
                     'message': message,
-                    'sender_id': self.user.id,
-                    'sender_name': self.user.username,
+                    'sender_id': self.pk,
+                    'sender_name': self.username,
                     'dest': dest,
                 }
             )
+            print("send to channel dest ok", time.time())
 
     async def chat_message(self, event):
+        print("receive from channel", time.time())
         message = event['message']
         dest = event['dest']
         user_id = event['sender_id']
         user_name = event['sender_name']
         # exclude = event['exclude']
         # if self.channel_name != exclude:
+        print("sending to ws client...", time.time())
         await self.send(text_data=json.dumps({
             'message': message,
             'sender_id': user_id,
             'sender_name': user_name,
             'dest': dest,
         }))
+        print("send to ws client ok", time.time())
