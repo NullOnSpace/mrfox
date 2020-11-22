@@ -52,7 +52,7 @@ class ChatContactTest(TestCase):
         self.assertEqual(await comm12.receive_json_from(), expected_msg)
         # message will send to the dest user
         self.assertEqual(await comm21.receive_json_from(), expected_msg)
-        # message wont send to a unrelevant user
+        # message wont send to an unrelevant user
         self.assertTrue(await comm31.receive_nothing())
         await comm11.disconnect()
         await comm12.disconnect()

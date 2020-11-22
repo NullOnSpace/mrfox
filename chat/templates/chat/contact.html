@@ -12,14 +12,19 @@
   <div class="contact-title">
     Contacts
   </div>
-  {% for contact in contacts %}
-  <div class="contact" data-dest="{{ contact.dest }}">{{ contact.name }}</div>
-  {% empty %}
-  No friend :(
-  {% endfor %}
+  <ul>
+    {% for contact in contacts %}
+    <li class="contact" data-dest="{{ contact.dest }}">{{ contact.name }}<span class="badge"></span></li>
+    {% empty %}
+    No friend :(
+    {% endfor %}
+  </ul>
 </div>
 <div id="chat">
-  <div id="dest"></div>
+  <div id="dest">
+    <div id="dest-title"></div>
+    <div id="status-light"></div>
+  </div>
   <div id="dialog">
   </div>
   <div id="chat-input">
@@ -34,29 +39,118 @@
 
 {% block domready %}
   const userId = document.getElementById('user-id').textContent;
+  window.connecting = false;
 
-  window.chatSocket = new WebSocket(
-     'ws://'
-     + window.location.host
-     + '/ws/chat/'
-  );
+
+  function connect(){
+
+    if (window.connecting == false){
+      const domStatusLight = document.getElementById("status-light");
+      domStatusLight.removeEventListener("click", connect);
+      domStatusLight.classList.remove("connected");
+      domStatusLight.classList.add("connecting");
+      window.chatSocket = new WebSocket(
+      'ws://'
+      + window.location.host
+      + '/ws/chat/'
+      );
+    }
+
+    chatSocket.onopen = function(e) {
+      const messageInputDom = document.querySelector('#chat-message-input');
+      window.connecting = true;
+      const domStatusLight = document.getElementById("status-light");
+      domStatusLight.classList.remove("connecting");
+      domStatusLight.classList.add("connected");
+      domStatusLight.removeEventListener("click", connect);
+      if (window.activeContact){
+        messageInputDom.disabled = false;
+        messageInputDom.placeholder = "Enter your message";
+        messageInputDom.focus();
+      } else {
+        messageInputDom.placeholder = "Choose a Contact to send message";
+      }
+    };
+
+    chatSocket.onmessage = function(e) {
+       const data = JSON.parse(e.data);
+       const domMessage = document.createElement("div");
+       const domUser = document.createElement("div");
+       const domMsgContent = document.createElement("div");
+       const domMsgContentWrapper = document.createElement("div");
+       const dest = data.dest;
+       const domContact = window.destMapping[dest];
+       if (!domContact.classList.contains("active")){
+         const domBadge = domContact.getElementsByClassName("badge")[0];
+         if (domBadge.innerText){
+           var counter = parseInt(domBadge.innerText);
+         }else{
+           var counter = 0;
+         }
+         domBadge.innerText = counter + 1;
+       }
+       domUser.classList.add("user");
+       domMessage.classList.add("msg-box");
+       domMessage.classList.add("clearfix");
+       domMsgContentWrapper.classList.add("msg-wrapper");
+       if (data.sender_id == userId){
+         domMessage.classList.add("self");
+       }else if (data.sender_id != 0){
+         domMessage.classList.add("other");
+       }else if (data.sender_id == 0){
+         domMessage.classList.add("sys");
+       }else {
+         console.log("wrong user id", data.sender_id);
+       }
+       domMsgContent.classList.add("msg");
+       domMessage.appendChild(domUser);
+       domMsgContentWrapper.appendChild(domMsgContent);
+       domMessage.appendChild(domMsgContentWrapper);
+       domUser.dataset.uid = data.sender_id;
+       domUser.innerText = data.sender_name;
+       domMsgContent.innerText = data.message;
+       const domDialogWrapper = document.querySelector('#dialog');
+       const domDialog = getDialog(dest);
+       domDialog.appendChild(domMessage);
+       domDialogWrapper.scrollTo(0, domDialogWrapper.scrollHeight);
+    };
+
+    chatSocket.onclose = function(e) {
+       console.info('Chat socket closed unexpectedly');
+       const messageInputDom = document.querySelector('#chat-message-input');
+       messageInputDom.disabled = true;
+       messageInputDom.placeholder = "Connection break,Press F5 to refresh";
+       window.connecting = false;
+       const domStatusLight = document.getElementById("status-light");
+       domStatusLight.classList.remove("connected");
+       domStatusLight.classList.remove("connecting");
+       domStatusLight.addEventListener("click", connect);
+    };
+  }
+
+
+  connect();
   window.activeContact = null;
+  window.destMapping = new Object();
   const domContacts = document.querySelectorAll(".contact");
   domContacts.forEach(function(target, idx, nodeList){
+    window.destMapping[target.dataset.dest] = target;
     target.addEventListener("click", function(e){
       window.activeContact = e.target;
       document.querySelectorAll(".contact").forEach(function(t){
         t.classList.remove("active");
       });
       e.target.classList.add("active");
+      const domBadge = e.target.getElementsByClassName("badge")[0];
+      domBadge.innerText = "";
       const dialogId = e.target.dataset.dest;
       const domDialog = getDialog(dialogId);
       document.querySelectorAll(".dialog").forEach(function(t){
         t.classList.remove("active");
       });
       domDialog.classList.add("active");
-      const domDest = document.getElementById("dest");
-      domDest.innerText = this.innerText;
+      const domDestTitle = document.getElementById("dest-title");
+      domDestTitle.innerText = this.innerText;
       if (window.chatSocket.readyState == 1){
         const messageInputDom = document.querySelector('#chat-message-input');
         messageInputDom.disabled = false;
@@ -80,63 +174,16 @@
     }
   }
 
-  chatSocket.onmessage = function(e) {
-     const data = JSON.parse(e.data);
-     const domMessage = document.createElement("div");
-     const domUser = document.createElement("div");
-     const domMsgContent = document.createElement("div");
-     const domMsgContentWrapper = document.createElement("div");
-     const dest = data.dest;
-     domUser.classList.add("user");
-     domMessage.classList.add("msg-box");
-     domMessage.classList.add("clearfix");
-     domMsgContentWrapper.classList.add("msg-wrapper");
-     if (data.sender_id == userId){
-       domMessage.classList.add("self");
-     }else if (data.sender_id != 0){
-       domMessage.classList.add("other");
-     }else if (data.sender_id == 0){
-       domMessage.classList.add("sys");
-     }else {
-       console.log("wrong user id", data.sender_id);
-     }
-     domMsgContent.classList.add("msg");
-     domMessage.appendChild(domUser);
-     domMsgContentWrapper.appendChild(domMsgContent);
-     domMessage.appendChild(domMsgContentWrapper);
-     domUser.dataset.uid = data.sender_id;
-     domUser.innerText = data.sender_name;
-     domMsgContent.innerText = data.message;
-     const domDialogWrapper = document.querySelector('#dialog');
-     const domDialog = getDialog(dest);
-     domDialog.appendChild(domMessage);
-     domDialogWrapper.scrollTo(0, domDialogWrapper.scrollHeight);
-  };
-
-  chatSocket.onclose = function(e) {
-     console.error('Chat socket closed unexpectedly');
-     const messageInputDom = document.querySelector('#chat-message-input');
-     messageInputDom.disabled = true;
-     messageInputDom.placeholder = "Connection break,Press F5 to refresh";
-  };
-
-  chatSocket.onopen = function(e) {
-    const messageInputDom = document.querySelector('#chat-message-input');
-    if (window.activeContact){
-      messageInputDom.disabled = false;
-      messageInputDom.placeholder = "Enter your message";
-      messageInputDom.focus();
-    } else {
-      messageInputDom.placeholder = "Choose a Contact to send message";
-    }
-  };
-
   document.querySelector('#chat-message-input').focus();
   document.querySelector('#chat-message-input').onkeyup = function(e) {
      if (e.keyCode === 13) {  // enter, return
-        e.preventDefault();
         document.querySelector('#chat-message-submit').click();
      }
+  };
+  document.querySelector('#chat-message-input').onkeydown = function(e) {
+    if (e.keyCode == 13){
+      return false;
+    }
   };
 
   document.querySelector('#chat-message-submit').onclick = function(e) {

@@ -22,6 +22,13 @@
   overflow-y: scroll;
 }
 
+#contact-list li {
+  list-style: none;
+}
+#contact-list ul {
+  padding: 0;
+}
+
 #contact-list::-webkit-scrollbar {
   width: 5px;
   height: 8px;
@@ -49,6 +56,7 @@
   background-color: #42602D;
   padding: 0 5px;
   color: white;
+  cursor: default;
 }
 #contact-list .contact.active {
   background-color: #91B493;
@@ -70,8 +78,32 @@
   height: 30px;
   line-height: 30px;
   font-size: 14px;
-  text-align: center;
   font-weight: bold;
+  position: relative;
+}
+
+#dest-title {
+  text-align: center;
+}
+
+#status-light {
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  border-radius: 50%;
+  background-color: red;
+  cursor: pointer;
+}
+
+#status-light.connecting {
+  cursor: default;
+  background-color: yellow;
+}
+#status-light.connected {
+  cursor: default;
+  background-color: green;
 }
 
 .dialog {

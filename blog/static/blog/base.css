@@ -1,7 +1,7 @@
 #content {
-  width: 1000px;
+  max-width: 1000px;
   margin: 0 auto;
-  min-height: 540px;
+  min-height: 600px;
   position: relative;
 }
 
@@ -14,12 +14,20 @@
   margin-right: 20px;
 }
 
-#sidebar {
-  display: inline-block;
-  width: 220px;
-  border: 1px solid #e5e5e5;
-  padding: 10px;
-  vertical-align: top;
+@media (max-width: 1024px){
+  #sidebar {
+    display: none;
+  }
+}
+
+@media (min-width: 1025px){
+  #sidebar {
+    display: inline-block;
+    width: 220px;
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+    vertical-align: top;
+  }
 }
 
 #footer {

@@ -8,7 +8,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class ChatRoomConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope['user']
-        if not user.is_authenticated:
+        if not self.user.is_authenticated:
             await self.close()
         else:
             self.room_id = self.scope['url_route']['kwargs']['room_id']
@@ -84,9 +84,9 @@ class ContactConsumer(AsyncWebsocketConsumer):
                 'sender_id': self.pk,
                 'sender_name': self.username,
                 'dest': dest,
-                # 'exclude': self.channel_name,
             }
         )
+        # send to dest user
         if type_ == "user":
             pk1, pk2 = pks.split("_")
             pk1, pk2 = int(pk1), int(pk2)
@@ -108,8 +108,6 @@ class ContactConsumer(AsyncWebsocketConsumer):
         dest = event['dest']
         user_id = event['sender_id']
         user_name = event['sender_name']
-        # exclude = event['exclude']
-        # if self.channel_name != exclude:
         await self.send(text_data=json.dumps({
             'message': message,
             'sender_id': user_id,
