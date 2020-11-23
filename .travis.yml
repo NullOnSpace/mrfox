@@ -34,6 +34,6 @@ install:
   - pip install coverage codecov
 # command to run tests
 script:
-    - coverage run --source="." manage.py test --settings=mysite.settings.pro --parallel
+    - coverage run --source="." manage.py test --parallel
 after_success:
     - coverage report
