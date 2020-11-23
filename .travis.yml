@@ -10,6 +10,7 @@ python:
 
 services:
   - mysql
+  - redis-server
 env:
   global:
     - DJANGO_SETTINGS_MODULE="mysite.settings.pro"
@@ -27,7 +28,6 @@ addons:
     - python-dev
     - python3-dev
     - libmysqlclient-dev
-    - redis-server
 install:
   - pip install -r requirements.txt
   - pip install python-coveralls
