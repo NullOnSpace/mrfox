@@ -15,7 +15,7 @@ env:
     - DJANGO_SETTINGS_MODULE="mysite.settings.pro"
 branches:
     only:
-        - master
+        - chat
 # command to install dependencies
 before_install:
   - sudo apt-get update
@@ -37,6 +37,3 @@ script:
     - coverage run --source="." manage.py test --parallel
 after_success:
     - coverage report
-notifications:
-  webhooks:
-    - https://www.yforward.top/hook/
