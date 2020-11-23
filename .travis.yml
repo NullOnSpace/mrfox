@@ -34,6 +34,6 @@ install:
   - pip install coverage codecov
 # command to run tests
 script:
-    - coverage run --source="." manage.py test --parallel
+    - coverage run --source="." manage.py test
 after_success:
     - coverage report
