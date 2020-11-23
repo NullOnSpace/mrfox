@@ -27,6 +27,7 @@ addons:
     - python-dev
     - python3-dev
     - libmysqlclient-dev
+    - redis-server
 install:
   - pip install -r requirements.txt
   - pip install python-coveralls
