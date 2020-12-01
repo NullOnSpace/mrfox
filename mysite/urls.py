@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from blog.views import index
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +26,5 @@ urlpatterns = [
     path('hook/', include('webhook.urls', namespace='webhook')),
     path('upload/', include('upload.urls', namespace='upload')),
     path('chat/', include('chat.urls', namespace='chat')),
+    path('', index),
 ]

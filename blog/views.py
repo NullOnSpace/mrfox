@@ -126,3 +126,7 @@ def post_tag_set(request):
         return JsonResponse(res)
     else:
         return HttpResponseNotAllowed('only post method allowed')
+
+
+def index(request):
+    return render(request, 'blog/index.html')
