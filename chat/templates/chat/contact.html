@@ -50,7 +50,7 @@
       domStatusLight.classList.remove("connected");
       domStatusLight.classList.add("connecting");
       window.chatSocket = new WebSocket(
-      'ws://'
+      {% if debug %} 'ws://' {% else %} 'wss://' {% endif %}
       + window.location.host
       + '/ws/chat/'
       );

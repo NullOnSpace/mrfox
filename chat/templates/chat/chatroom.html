@@ -33,7 +33,7 @@
   const roomId = document.getElementById('chatroom').dataset.rid;
 
   const chatSocket = new WebSocket(
-     'ws://'
+     {% if debug %}'ws://'{% else %}'wss://'{% endif %}
      + window.location.host
      + '/ws/chat/'
      + roomId
