@@ -3,7 +3,7 @@ django-taggit==1.1.0
 Markdown==3.1.1
 mysqlclient==1.4.4
 pytz==2019.3
-sqlparse==0.3.0
+sqlparse==0.4.4
 pyOpenSSL==19.1.0
 requests==2.20.0
 PySocks==1.7.1
